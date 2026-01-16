@@ -1,0 +1,10 @@
+{
+  "devDependencies": {
+    "electron": "^39.2.7"
+  },
+  "scripts": {
+  "start": "ng serve",
+  "electron": "electron .",
+  "electron:serve": "concurrently \"ng serve\" \"electron .\""
+}
+}
