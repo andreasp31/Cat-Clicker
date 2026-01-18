@@ -8,6 +8,7 @@
     justify-content: center;
     align-content: center;
     display: flex;
+    position: fixed;
 }
 
 .polariod{
@@ -215,7 +216,19 @@
     z-index: 10;
     justify-content: center;
     align-items: center;
+}
 
+.ventana_guardar2{
+    top: 0;
+    left: 0;
+    position: fixed;
+    background-color:rgba(0, 0, 0, 0.5);
+    display: flex;
+    width: 100%;
+    height: 100%;
+    z-index: 10;
+    justify-content: center;
+    align-items: center;
 }
 
 .ventana_guardar_interior{
@@ -292,4 +305,94 @@ body{
 
 .nombre_jugador:active{
     border-width: 0em;
+}
+
+.clasificacion{
+    display: flex;
+    flex-direction: column;
+    height: 25em;
+    gap: 0.5em;
+}
+
+.puestos{
+    display: flex;
+    flex-direction: column;
+    gap: 0.3em;
+    align-content: center;
+    align-items: center;
+    overflow-y: auto;
+    overflow-x: hidden;
+    height: 16em;
+    min-height: 0;
+    padding-left: 0.7em;
+}
+
+.Tpuestos{
+    display: flex;
+    flex-direction: column;
+    gap: 1em;
+    align-content: center;
+    align-items: center;
+}
+
+.puesto{
+    display: flex;
+    flex-direction: row;
+    gap: 3.5em;
+    text-align: center;
+    align-content: center;
+    align-items: center;
+    background-image: url(imagenes/fondo_puestos.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-size: contain;
+    height: 4em;
+    min-height: 4em;
+    max-height: 4em;
+}
+
+.puestoTitulos{
+    display: flex;
+    flex-direction: row;
+    gap: 3.5em;
+    align-items: center;
+    width: 30em;
+    text-align: center;
+    align-content: center;
+}
+
+.tituloRanking{
+    background: url(imagenes/tituloPuesto.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-size: contain;
+    height: 4em;
+    width: 8em;
+}
+
+.tituloRanking2{
+    background: url(imagenes/tituloJugador.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-size: contain;
+    height: 4em;
+    width: 8em;
+}
+
+.tituloRanking3{
+    background: url(imagenes/tituloClicks.png);
+    background-position: center;
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-size: contain;
+    height: 4em;
+    width: 8em;
+}
+
+.tabla{
+    width: 8em;
+    color: #262D41;
 }

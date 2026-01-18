@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 
@@ -14,11 +14,8 @@ export class AppComponent {
   tiempoAcabado = false;
   contador=0;
   modalAbierto = false;
-
-  userData = {
-    nombre: '',
-    contador: ''
-  };
+  modalAbierto2  = false;
+  nombreJugador: string = "";
 
   abrirModal(){
     this.modalAbierto = true;
@@ -26,6 +23,14 @@ export class AppComponent {
 
   cerrarModal(){
     this.modalAbierto = false;
+  }
+
+  abrirModal2(){
+    this.modalAbierto2 = true;
+  }
+
+  cerrarModal2(){
+    this.modalAbierto2 = false;
   }
 
   incrementarClick(){

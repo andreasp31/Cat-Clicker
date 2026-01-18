@@ -9,7 +9,7 @@
             <div class="tiempo">Tiempo: </div>
             <div class="segundos">{{segundos}}</div>
           </div>
-          <div class="ranking"></div>
+          <div class="ranking" (click)="abrirModal2()"></div>
           <div class="fondo_titulo">
             <h1 class="titulo">Cat Clicker</h1>
           </div>
@@ -31,17 +31,43 @@
                 <h1 class="titulo">Cat Clicker</h1>
               </div>
             </div>
-            <form class="fondo_2" action="/submit-form" method="post">
+            <form class="fondo_2" (submit)="guardarPartida(); $event.preventDefault()">
               <div>Nombre del jugador</div>
               <div class="fondo_atributos">
-                <input type="text" id="nombre" name="nombre" placeholder="Introduce tu nombre"  class="nombre_jugador">
+                <input type="text" [(ngModel)]="nombreJugador" name="nombre" placeholder="Introduce tu nombre"  class="nombre_jugador">
               </div>
               <div>Clicks totales</div>
               <div class="fondo_atributos">
                 <div>{{contador}}</div>
               </div>
-              <div class="boton_guardar2"></div>
+              <div type="submit" class="boton_guardar2"></div>
             </form>
+          </div>
+      </div>
+      <div class="ventana_guardar2" *ngIf="modalAbierto2">
+          <div class="ventana_guardar_interior">
+            <div class="fondo_">
+              <div class="fondo_cruz" (click)="cerrarModal2()"></div>
+              <div class="fondo_titulo">
+                <h1 class="titulo">Ranking</h1>
+              </div>
+            </div>
+            <div class="clasificacion">
+              <div class="Tpuestos">
+                <div class="puestoTitulos">
+                  <div class="tituloRanking"></div>
+                  <div class="tituloRanking2"></div>
+                <div class="tituloRanking3"></div>
+                </div>
+              </div>
+              <div class="puestos">
+                <div class="puesto" *ngFor="let item of ranking; let i = index">
+                  <div class="tabla">{{i+1}}</div>
+                  <div class="tabla">{{item.nombre}}</div>
+                  <div class="tabla">{{item.clicks}}</div>
+                </div>
+              </div>
+            </div>
           </div>
       </div>
   </main>
