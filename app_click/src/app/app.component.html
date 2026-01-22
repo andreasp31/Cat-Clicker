@@ -31,7 +31,7 @@
                 <h1 class="titulo">Cat Clicker</h1>
               </div>
             </div>
-            <form class="fondo_2" (submit)="guardarPartida(); $event.preventDefault()">
+            <form class="fondo_2">
               <div>Nombre del jugador</div>
               <div class="fondo_atributos">
                 <input type="text" [(ngModel)]="nombreJugador" name="nombre" placeholder="Introduce tu nombre"  class="nombre_jugador">
@@ -40,7 +40,7 @@
               <div class="fondo_atributos">
                 <div>{{contador}}</div>
               </div>
-              <div type="submit" class="boton_guardar2"></div>
+              <div (click)="guardarDatos()" class="boton_guardar2"></div>
             </form>
           </div>
       </div>
@@ -61,11 +61,13 @@
                 </div>
               </div>
               <div class="puestos">
-                <div class="puesto" *ngFor="let item of ranking; let i = index">
-                  <div class="tabla">{{i+1}}</div>
-                  <div class="tabla">{{item.nombre}}</div>
-                  <div class="tabla">{{item.clicks}}</div>
-                </div>
+                @for (jugador of ranking; track $index) {
+                  <div class="puesto">
+                    <div class="tabla">{{ $index + 1 }}</div>
+                    <div class="tabla">{{ jugador.nombre }}</div>
+                    <div class="tabla">{{ jugador.clicks }}</div>
+                  </div>
+                }
               </div>
             </div>
           </div>

@@ -1,15 +1,61 @@
 const { app, BrowserWindow, ipcMain } = require('electron');
+const { MongoClient } = require('mongodb');
 const path = require('path');
-const Database = require('better-sqlite3');
-
 let mainWindow;
-let db = null;
 
+//Configuración de la base de datos
+const url = 'mongodb+srv://andreasofiapais_db_user:admin123456789@cluster0.dhnz1y7.mongodb.net/'
+const dbName = "catClickerDB";
+let db;
+
+//Función para concectar con mongoDb atlas al iniciar el juego
+async function connectDB() {
+  try {
+    const client = await MongoClient.connect(url);
+    db = client.db(dbName);
+    console.log("Conectado a MongoDB");
+  } catch (err) {
+    console.error("Error al conectar a MongoDB", err);
+  }
+}
+
+//comunicarse con angular
+
+//Escucha para guardar la nueva puntuación
+ipcMain.handle('guardar_puntuacion', async (event, data) => {
+  try {
+    const collection = db.collection('ranking');
+    await collection.insertOne({
+      nombre: data.nombre,
+      clicks: data.clicks,
+      fecha: new Date()
+    });
+    return { success: true };
+  } 
+  catch (err) {
+    return { success: false, error: err.message };
+  }
+});
+
+//Escucha y devuelve el top 10 de mejores puntuaciones
+ipcMain.handle('obtener-ranking', async () => {
+  try {
+    const collection = db.collection('ranking');
+    //coger los 10 mejores ordenados de mayor a menor
+    return await collection.find().sort({ clicks: -1 }).limit(10).toArray();
+  } 
+  catch (err) {
+    return [];
+  }
+});
+
+//Gestión de la ventana
 function createWindow() {
   mainWindow = new BrowserWindow({
     width: 1920,
     height: 1080,
     webPreferences: {
+      //Permite usar funciones de node en el front
       nodeIntegration: true,
       contextIsolation: false,
       enableRemoteModule: true
@@ -22,89 +68,21 @@ function createWindow() {
   // Para desarrollo: abrir DevTools
   mainWindow.webContents.openDevTools();
 
-  //Iniciar base de datos cuando la ventanae esté lista
-  mainWindow.webContents.on('did-finish-load',()=>{
-    iniciarBase();
-  })
-
   mainWindow.on('closed', () => {
     mainWindow = null;
   });
 }
+//Iniiciar el juego
+app.whenReady().then(() => {
+  //Conectar con la base de datos
+  connectDB();
+  //Crear la interfaz
+  createWindow();
+});
 
-function iniciarBase(){
-  try{
-    //Ruta de la base de datos en el directorio de datos de usuario
-    const userData = app.getPath('userData');
-    const dbPath = path.join(userData,'partidas.db');
-    console.log("Base de datos en", dbPath);
-
-    //Conectar a SQLite
-    db = new Database(dbPath);
-
-    //Crear tabla para el ranking
-    db.exec(`
-      CREATE TABLE IF NOT EXISTS ranking (
-      id INTEGER PRIMARY KEY AUTOINCREMENT,
-      nombre TEXT NOT NULL,
-      clicks INTEGER NOT NULL)`
-    )
-    console.log("Base de datos inicializada");
-  }
-  catch(error){
-    console.log("Error al inicializar la base de datos", error);
-  }
-}
-
-ipcMain.on("guardar_partida",(event,{nombre,clicks})=>{
-  try{
-    const preparar = db.prepare('INSERT INTO ranking (nombre,clicks) VALUES (?,?)');
-    const resultado = preparar.run(nombre,clicks);
-    console.log("Partida guardada con ID:", resultado.lastInsertRowid);
-    event.reply("guardar_partida",{
-      success: true,
-      id: resultado.lastInsertRowid
-    })
-  }
-  catch(error){
-    console.log("Error al guardar partida", error);
-    event.reply("guardar_partida",{
-      success: false,
-      error: error.message
-    })
-  }
-})
-
-ipcMain.on("obtener_ranking",(event)=>{
-  try{
-    const preparar = db.prepare('SELECT * FROM ranking ORDER BY clicks DESC LIMIT 10');
-    const resultado = preparar.all();
-    console.log("Ranking obtenido:", resultado);
-    event.reply("ranking_obtenido",{
-      success: true,
-      ranking: resultado
-    })
-  }
-  catch(error){
-    console.log("Error al obtener ranking", error);
-    event.reply("ranking_obtenido",{
-      success: false,
-      error: error.message
-    })
-  }
-})
-
-app.whenReady().then(createWindow);
-
+//Cerrar el juego cuanto todo se cierre
 app.on('window-all-closed', () => {
   if (process.platform !== 'darwin') {
     app.quit();
-  }
-});
-
-app.on('before-quit', () => {
-  if (db) {
-    db.close();
-    console.log("Base de datos cerrada");
   }
 });
